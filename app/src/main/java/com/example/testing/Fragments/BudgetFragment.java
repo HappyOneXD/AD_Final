@@ -2,16 +2,18 @@ package com.example.testing.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
 import com.example.testing.Activities.Budgets.AddBudgetActivity;
+import com.example.testing.Activities.Budgets.EditBudgetActivity;
 import com.example.testing.Adapters.BudgetAdapter;
 import com.example.testing.Models.BudgetModel;
 import com.example.testing.R;
@@ -19,21 +21,16 @@ import com.example.testing.Repositories.BudgetRepository;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BudgetFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+// Fragment hien thi danh sach cac budget
 public class BudgetFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    // Cac bien de quan ly danh sach budget
     private ArrayList<BudgetModel> budgetModelArrayList;
     private BudgetAdapter budgetAdapter;
     private BudgetModel budgetModel;
@@ -44,15 +41,6 @@ public class BudgetFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BudgetFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static BudgetFragment newInstance(String param1, String param2) {
         BudgetFragment fragment = new BudgetFragment();
         Bundle args = new Bundle();
@@ -74,10 +62,14 @@ public class BudgetFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate layout cho fragment
         View view = inflater.inflate(R.layout.fragment_budget, container, false);
+
+        // Anh xa cac view
         Button btnCreateBudget = view.findViewById(R.id.btnAddBudget);
         budgetRcv = view.findViewById(R.id.rvBudget);
+
+        // Xu ly nut them budget moi
         btnCreateBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,13 +77,34 @@ public class BudgetFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        // Khoi tao danh sach budget
         budgetModelArrayList = new ArrayList<>();
         budgetRepository = new BudgetRepository(getActivity());
-        budgetModelArrayList = budgetRepository.getListBudgets(); // lay du lieu tu database
+
+        // Lay danh sach budget tu database
+        budgetModelArrayList = budgetRepository.getListBudgets();
+
+        // Tao adapter va gan vao RecyclerView
         budgetAdapter = new BudgetAdapter(budgetModelArrayList, getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         budgetRcv.setLayoutManager(linearLayoutManager);
         budgetRcv.setAdapter(budgetAdapter);
+
+        // Xu ly su kien click vao item budget de chinh sua
+        budgetAdapter.setOnClickListener(new BudgetAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                // Lay budget duoc click
+                BudgetModel selectedBudget = budgetModelArrayList.get(position);
+                // Chuyen sang man hinh chinh sua budget
+                Intent intent = new Intent(getActivity(), EditBudgetActivity.class);
+                // Gui budget ID sang EditBudgetActivity
+                intent.putExtra("BUDGET_ID", selectedBudget.getId());
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 }

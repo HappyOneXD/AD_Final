@@ -90,6 +90,20 @@ public class ExpensesFragment extends Fragment {
         expenseRcv.setLayoutManager(linearLayoutManager);
         expenseRcv.setAdapter(expenseAdapter);
 
+        // Xu ly su kien click vao item expense de chinh sua
+        expenseAdapter.setOnClickListener(new ExpenseAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                // Lay expense duoc click
+                ExpenseModel selectedExpense = expenseModelArrayList.get(position);
+                // Chuyen sang man hinh chinh sua expense
+                Intent intent = new Intent(getActivity(), com.example.testing.Activities.Expenses.EditExpenseActivity.class);
+                // Gui expense ID sang EditExpenseActivity
+                intent.putExtra("EXPENSE_ID", selectedExpense.getId());
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 }

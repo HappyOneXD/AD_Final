@@ -1,18 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout cho fragment Home - hien thi dashboard tong quan -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.HomeFragment"
     android:padding="10dp"
-    android:gravity="center">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Tieu de Dashboard -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Page"
+        android:text="Dashboard"
         android:textStyle="bold"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Card hien thi tong budget -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:elevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTotalBudgets"
+                android:text="Total Budgets: 0 VND"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#03A9F4"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Card hien thi tong expense -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:elevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTotalExpenses"
+                android:text="Total Expenses: 0 VND"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#F44336"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Tieu de danh sach expense gan day -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvRecentTitle"
+        android:text="Recent Expenses:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Danh sach expense gan day -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/rvRecentExpenses"/>
 
 </LinearLayout>

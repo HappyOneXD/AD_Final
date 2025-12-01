@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout cho man hinh chinh sua expense -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <!-- Tieu de -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Expense"
+        android:textStyle="bold|italic"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"/>
+
+    <!-- Nhap ten expense -->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Expense Name"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
+        android:autofillHints="false"
+        android:id="@+id/edtExpenseName"/>
+
+    <!-- Nhap so tien expense -->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Amount"
+        android:layout_marginTop="10dp"
+        android:inputType="numberDecimal"
+        android:id="@+id/edtAmount"
+        android:autofillHints="false"/>
+
+    <!-- Chon budget -->
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/spinnerBudget"/>
+
+    <!-- Nhap mo ta expense -->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="10dp"
+        android:autofillHints="false"
+        android:hint="Description"
+        android:id="@+id/edtDescription"/>
+
+    <!-- Nut cap nhat expense -->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#4CAF50"
+        android:text="Update Expense"
+        android:textColor="@color/white"
+        android:id="@+id/btnUpdateExpense"/>
+
+    <!-- Nut xoa expense -->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F44336"
+        android:text="Delete Expense"
+        android:textColor="@color/white"
+        android:id="@+id/btnDeleteExpense"/>
+
+    <!-- Nut quay lai -->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/btnBackExpense"/>
+</LinearLayout>
