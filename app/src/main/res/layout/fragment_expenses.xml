@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout cho fragment hien thi danh sach expenses -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.ExpensesFragment"
+    android:padding="8dp">
+
+    <!-- Nut them expense moi -->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#03A9F4"
+        android:text="+ Add new Expense"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:id="@+id/btnAddExpense"/>
+
+    <!-- RecyclerView hien thi danh sach expenses -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnAddExpense"
+        android:id="@+id/rvExpense"
+        android:layout_marginBottom="?actionBarSize"
+        android:layout_marginTop="10dp"/>
+</RelativeLayout>

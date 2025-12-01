@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BTEC - Pearson FPT"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:id="@+id/tvTitle"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@drawable/logo_btec"
+        android:contentDescription="Logo"
+        android:layout_below="@id/tvTitle"
+        android:id="@+id/imgLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="System Login"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_below="@id/imgLogo"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
+        android:id="@+id/tvSystemLogin" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Username"
+        android:inputType="text"
+        android:autofillHints="false"
+        android:id="@+id/edtUsername"
+        android:layout_below="@id/tvSystemLogin"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Password"
+        android:inputType="textPassword"
+        android:autofillHints="false"
+        android:id="@+id/editPassword"
+        android:layout_below="@id/edtUsername"
+        android:layout_marginTop="20dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editPassword"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:id="@+id/btLogin"
+            android:layout_marginEnd="5dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_toRightOf="@id/btLogin" />
+    </RelativeLayout>
+</RelativeLayout>

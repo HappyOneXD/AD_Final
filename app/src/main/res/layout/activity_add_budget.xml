@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create a new Budget"
+        android:textStyle="bold|italic"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Money"
+        android:layout_marginTop="10dp"
+        android:inputType="numberDecimal"
+        android:id="@+id/edtMoney"
+        android:autofillHints="false" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Name's Budget"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
+        android:autofillHints="false"
+        android:id="@+id/edtBudgetName" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="10dp"
+        android:autofillHints="false"
+        android:hint="Description's Budget"
+        android:id="@+id/edtDescription" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#03A9F4"
+        android:text="Save new Budget"
+        android:textColor="@color/white"
+        android:id="@+id/btnSaveBudget" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/btnBackBudget" />
+</LinearLayout>

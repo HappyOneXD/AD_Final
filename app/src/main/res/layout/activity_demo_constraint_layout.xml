@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BTec - FPT"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints"
+        android:id="@+id/tvTitle" />
+
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@drawable/logo_btec"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:contentDescription="Logo"
+        android:id="@+id/imgLogo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Register an account"
+        android:textStyle="bold|italic"
+        app:layout_constraintTop_toBottomOf="@id/imgLogo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:id="@+id/tvRegister" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Enter Username"
+        android:autofillHints="false"
+        app:layout_constraintTop_toBottomOf="@id/tvRegister"
+        android:layout_marginTop="15dp"
+        android:id="@+id/edtUsername" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Enter Password"
+        android:autofillHints="false"
+        app:layout_constraintTop_toBottomOf="@id/edtUsername"
+        android:layout_marginTop="15dp"
+        android:id="@+id/editPassword" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/radGroupGender"
+        app:layout_constraintTop_toBottomOf="@id/editPassword"
+        android:layout_marginTop="15dp">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:id="@+id/radMale" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:id="@+id/radFemale"
+            android:layout_marginStart="15dp" />
+    </RadioGroup>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cbAgree"
+        android:text="Agree with Conditions"
+        app:layout_constraintTop_toBottomOf="@id/radGroupGender"
+        android:layout_marginTop="10dp"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:background="#03A9F4"
+        android:textColor="@color/white"
+        android:id="@+id/btnSubmit"
+        app:layout_constraintTop_toBottomOf="@id/cbAgree"
+        app:layout_constraintRight_toLeftOf="@id/tvEmpty"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEmpty"
+        app:layout_constraintTop_toBottomOf="@id/cbAgree"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="15dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:background="#00BCD4"
+        android:id="@+id/btnCancel"
+        app:layout_constraintTop_toBottomOf="@id/cbAgree"
+        app:layout_constraintLeft_toRightOf="@id/tvEmpty"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

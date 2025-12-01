@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.BudgetFragment"
+    android:padding="8dp">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#03A9F4"
+        android:text="+ Add new a Budget"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:id="@+id/btnAddBudget" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnAddBudget"
+        android:id="@+id/rvBudget"
+        android:layout_marginBottom="?actionBarSize"
+        android:layout_marginTop="10dp" />
+</RelativeLayout>

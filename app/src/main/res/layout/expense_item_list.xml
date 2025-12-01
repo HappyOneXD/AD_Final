@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout cho moi item expense trong RecyclerView -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    android:elevation="8dp"
+    android:layout_marginTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <!-- Icon cho expense -->
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@drawable/logo_btec"
+            android:contentDescription="expense icon"
+            android:id="@+id/imgExpense"/>
+
+        <!-- Ten expense -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvNameExpense"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/imgExpense"
+            android:text="Tien an uong"
+            android:layout_marginStart="15dp"/>
+
+        <!-- So tien expense -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvAmountExpense"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#F44336"
+            android:layout_toEndOf="@id/imgExpense"
+            android:layout_below="@id/tvNameExpense"
+            android:text="150,000"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="3dp"/>
+
+        <!-- Ten budget ma expense nay thuoc ve -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvBudgetName"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:layout_toEndOf="@id/imgExpense"
+            android:layout_below="@id/tvAmountExpense"
+            android:text="Budget: Tien nha tro"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="3dp"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

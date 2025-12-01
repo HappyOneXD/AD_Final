@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:title="Home"
+            android:icon="@drawable/home_24dp"
+            android:id="@+id/menu_home" />
+        <item
+            android:title="Budget"
+            android:id="@+id/menu_budget"
+            android:icon="@drawable/wallet_24dp" />
+        <item
+            android:title="Expenses"
+            android:icon="@drawable/paid_24dp"
+            android:id="@+id/menu_expenses" />
+        <item
+            android:title="Settings"
+            android:id="@+id/menu_setting"
+            android:icon="@drawable/settings_24dp" />
+    </group>
+    <item android:title="Others">
+        <menu>
+            <item
+                android:title=""
+                android:id="@+id/menu_account"
+                android:icon="@drawable/account_menu" />
+            <item
+                android:title="Logout"
+                android:id="@+id/menu_logout"
+                android:icon="@drawable/logout_24dp" />
+        </menu>
+    </item>
+</menu>
