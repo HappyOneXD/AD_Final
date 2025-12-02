@@ -1,62 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout cho moi item expense trong RecyclerView -->
+<!-- Layout cho moi item expense trong RecyclerView - phien ban dep hon -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="4dp"
-    android:elevation="8dp"
-    android:layout_marginTop="10dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:background="#FFFFFF">
 
         <!-- Icon cho expense -->
-        <ImageView
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:src="@drawable/logo_btec"
-            android:contentDescription="expense icon"
-            android:id="@+id/imgExpense"/>
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="💸"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:background="#FFEBEE"
+            android:layout_marginEnd="15dp"/>
 
-        <!-- Ten expense -->
+        <!-- Thong tin expense -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Ten expense -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvNameExpense"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:text="Tien an uong"/>
+
+            <!-- So tien expense -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvAmountExpense"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#F44336"
+                android:text="- 150,000 VND"
+                android:layout_marginTop="3dp"/>
+
+            <!-- Ten budget ma expense nay thuoc ve -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvBudgetName"
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:text="From: Tien nha tro"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
+
+        <!-- Mui ten chi tiet -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvNameExpense"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_toEndOf="@id/imgExpense"
-            android:text="Tien an uong"
-            android:layout_marginStart="15dp"/>
-
-        <!-- So tien expense -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvAmountExpense"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#F44336"
-            android:layout_toEndOf="@id/imgExpense"
-            android:layout_below="@id/tvNameExpense"
-            android:text="150,000"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="3dp"/>
-
-        <!-- Ten budget ma expense nay thuoc ve -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvBudgetName"
-            android:textSize="14sp"
-            android:textStyle="italic"
-            android:layout_toEndOf="@id/imgExpense"
-            android:layout_below="@id/tvAmountExpense"
-            android:text="Budget: Tien nha tro"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="3dp"/>
-    </RelativeLayout>
+            android:text="›"
+            android:textSize="32sp"
+            android:textColor="#999999"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

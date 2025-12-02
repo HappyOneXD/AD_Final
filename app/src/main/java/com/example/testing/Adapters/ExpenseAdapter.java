@@ -56,10 +56,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseI
 
         // Hien thi ten expense
         holder.tvNameExpense.setText(model.getName());
-        // Hien thi so tien expense
-        holder.tvAmountExpense.setText(String.valueOf(model.getAmount()));
+        // Hien thi so tien expense voi dinh dang currency
+        holder.tvAmountExpense.setText("- " + formatCurrency(model.getAmount()) + " VND");
         // Hien thi ten budget ma expense nay thuoc ve
-        holder.tvBudgetName.setText(model.getBudgetName());
+        holder.tvBudgetName.setText("From: " + model.getBudgetName());
 
         // Xu ly su kien click vao item
         holder.viewItem.setOnClickListener(view -> {
@@ -67,6 +67,11 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseI
                 onClickListener.onClick(position);
             }
         });
+    }
+
+    // Dinh dang so tien theo format currency (1,000,000)
+    private String formatCurrency(int amount){
+        return String.format("%,d", amount);
     }
 
     // Tra ve so luong item trong danh sach

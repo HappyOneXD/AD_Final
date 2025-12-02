@@ -1,43 +1,42 @@
 package com.example.testing.Fragments;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-
+import com.example.testing.Activities.LoginActivity;
 import com.example.testing.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import static android.content.Context.MODE_PRIVATE;
+
+// Fragment hien thi man hinh cai dat
 public class SettingFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    // Cac view trong settings
+    private TextView tvUsername, tvEmail;
+    private LinearLayout layoutProfile, layoutChangePassword, layoutAbout, layoutLogout;
+    private String username = "";
+    private String email = "";
 
     public SettingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SettingFragment newInstance(String param1, String param2) {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
@@ -59,7 +58,111 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false);
+        // Inflate layout cho fragment
+        View view = inflater.inflate(R.layout.fragment_setting, container, false);
+
+        // Anh xa cac view
+        tvUsername = view.findViewById(R.id.tvUsername);
+        tvEmail = view.findViewById(R.id.tvEmail);
+        layoutProfile = view.findViewById(R.id.layoutProfile);
+        layoutChangePassword = view.findViewById(R.id.layoutChangePassword);
+        layoutAbout = view.findViewById(R.id.layoutAbout);
+        layoutLogout = view.findViewById(R.id.layoutLogout);
+
+        // Lay thong tin user tu SharedPreferences
+        SharedPreferences spf = getActivity().getSharedPreferences("USER_INFO", MODE_PRIVATE);
+        username = spf.getString("USER_USERNAME", "");
+        email = spf.getString("USER_EMAIL", "");
+
+        // Hien thi thong tin user
+        tvUsername.setText(username);
+        tvEmail.setText(email);
+
+        // Xu ly click vao Profile
+        layoutProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProfileDialog();
+            }
+        });
+
+        // Xu ly click vao Change Password
+        layoutChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showChangePasswordDialog();
+            }
+        });
+
+        // Xu ly click vao About
+        layoutAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAboutDialog();
+            }
+        });
+
+        // Xu ly click vao Logout
+        layoutLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutDialog();
+            }
+        });
+
+        return view;
+    }
+
+    // Hien thi dialog thong tin profile
+    private void showProfileDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("User Profile");
+        builder.setMessage("Username: " + username + "\nEmail: " + email);
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    // Hien thi dialog doi mat khau
+    private void showChangePasswordDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Change Password");
+        builder.setMessage("This feature isn't being worked on");
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    // Hien thi dialog thong tin ung dung
+    private void showAboutDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("About");
+        builder.setMessage("Campus Expenses Management\nThis help you manage your money");
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    // Hien thi dialog xac nhan dang xuat
+    private void showLogoutDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Logout");
+        builder.setMessage("Are you sure you want to logout?");
+
+        // Nut Yes - dang xuat
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            // Xoa thong tin user trong SharedPreferences
+            SharedPreferences spf = getActivity().getSharedPreferences("USER_INFO", MODE_PRIVATE);
+            SharedPreferences.Editor editor = spf.edit();
+            editor.clear();
+            editor.apply();
+
+            // Chuyen ve man hinh login
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        });
+
+        // Nut No - huy bo
+        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
     }
 }

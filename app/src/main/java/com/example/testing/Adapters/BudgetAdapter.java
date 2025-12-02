@@ -38,17 +38,22 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetItem
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.budget_item_list, parent, false);
         return new BudgetItemViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull BudgetAdapter.BudgetItemViewHolder holder, int position) {
         BudgetModel model = budgetModels.get(position); // lay du lieu theo vi tri tung dong trong list item budget
-        holder.tvMoneyBudget.setText(String.valueOf(model.getMoney()));
+        // Hien thi so tien voi dinh dang currency
+        holder.tvMoneyBudget.setText(formatCurrency(model.getMoney()) + " VND");
         holder.tvNameBudget.setText(model.getName());
         holder.viewItem.setOnClickListener(view -> {
-            if (onClickListener != null) {
+            if (onClickListener != null){
                 onClickListener.onClick(position);
             }
         });
+    }
+
+    // Dinh dang so tien theo format currency (1,000,000)
+    private String formatCurrency(int amount){
+        return String.format("%,d", amount);
     }
 
     @Override

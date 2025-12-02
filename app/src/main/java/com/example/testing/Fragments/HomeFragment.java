@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment {
     private void loadDashboardData(){
         // Tinh tong so tien cua tat ca budget
         int totalBudgetMoney = budgetRepository.getTotalBudgetMoney();
-        tvTotalBudgets.setText("Total Budgets: " + totalBudgetMoney + " VND");
+        tvTotalBudgets.setText("Total Budgets: " + formatCurrency(totalBudgetMoney) + " VND");
 
         // Lay danh sach tat ca expense de tinh tong
         ArrayList<ExpenseModel> allExpenses = expenseRepository.getListExpenses();
@@ -102,7 +102,12 @@ public class HomeFragment extends Fragment {
         for (ExpenseModel expense : allExpenses){
             totalExpenses += expense.getAmount();
         }
-        tvTotalExpenses.setText("Total Expenses: " + totalExpenses + " VND");
+        tvTotalExpenses.setText("Total Expenses: " + formatCurrency(totalExpenses) + " VND");
+    }
+
+    // Dinh dang so tien theo format currency (1,000,000)
+    private String formatCurrency(int amount){
+        return String.format("%,d", amount);
     }
 
     // Load danh sach 5 expense gan day nhat
