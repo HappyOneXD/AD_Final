@@ -85,6 +85,12 @@ public class BudgetFragment extends Fragment {
         // Lay danh sach budget tu database
         budgetModelArrayList = budgetRepository.getListBudgets();
 
+        // Tinh so tien con lai cho moi budget
+        for (BudgetModel budget : budgetModelArrayList){
+            int remaining = budgetRepository.getRemainingBudget(budget.getId());
+            budget.setRemainingMoney(remaining);
+        }
+
         // Tao adapter va gan vao RecyclerView
         budgetAdapter = new BudgetAdapter(budgetModelArrayList, getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);

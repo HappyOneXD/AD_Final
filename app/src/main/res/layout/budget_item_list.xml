@@ -44,15 +44,25 @@
                 android:textColor="#333333"
                 android:text="Tien nha tro"/>
 
-            <!-- So tien budget -->
+            <!-- So tien budget ban dau -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tvMoneyBudget"
-                android:textSize="22sp"
+                android:textSize="16sp"
+                android:textColor="#999999"
+                android:text="Budget: 3,000 VND"
+                android:layout_marginTop="3dp"/>
+
+            <!-- So tien con lai sau khi tru expense -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvRemainingBudget"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#03A9F4"
-                android:text="3,000,000 VND"
+                android:textColor="#4CAF50"
+                android:text="Remaining: 2,500 VND"
                 android:layout_marginTop="5dp"/>
         </LinearLayout>
 

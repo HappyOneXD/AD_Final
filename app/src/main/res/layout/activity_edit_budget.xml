@@ -48,25 +48,38 @@
     <!-- Nut cap nhat budget -->
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#4CAF50"
-        android:text="Update Budget"
+        android:layout_height="55dp"
+        android:background="@drawable/button_update"
+        android:text="✓ Update Budget"
         android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:elevation="4dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/btnUpdateBudget"/>
 
     <!-- Nut xoa budget -->
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#F44336"
-        android:text="Delete Budget"
+        android:layout_height="55dp"
+        android:background="@drawable/button_delete"
+        android:text="✕ Delete Budget"
         android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:elevation="4dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/btnDeleteBudget"/>
 
     <!-- Nut quay lai -->
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Back"
+        android:layout_height="55dp"
+        android:background="@drawable/button_back"
+        android:text="← Back"
+        android:textColor="#666666"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
         android:id="@+id/btnBackBudget"/>
 </LinearLayout>

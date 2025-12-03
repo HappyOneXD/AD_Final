@@ -55,25 +55,38 @@
     <!-- Nut cap nhat expense -->
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#4CAF50"
-        android:text="Update Expense"
+        android:layout_height="55dp"
+        android:background="@drawable/button_update"
+        android:text="✓ Update Expense"
         android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:elevation="4dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/btnUpdateExpense"/>
 
     <!-- Nut xoa expense -->
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#F44336"
-        android:text="Delete Expense"
+        android:layout_height="55dp"
+        android:background="@drawable/button_delete"
+        android:text="✕ Delete Expense"
         android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:elevation="4dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/btnDeleteExpense"/>
 
     <!-- Nut quay lai -->
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Back"
+        android:layout_height="55dp"
+        android:background="@drawable/button_back"
+        android:text="← Back"
+        android:textColor="#666666"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
         android:id="@+id/btnBackExpense"/>
 </LinearLayout>

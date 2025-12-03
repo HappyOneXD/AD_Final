@@ -11,6 +11,9 @@ public class BudgetModel {
     private String updatedAt;
     private String deletedAt;
 
+    // So tien con lai sau khi tru expense
+    private int remainingMoney;
+
     public BudgetModel(int id, String name, int money, String description, int status, int user_id, String createdAt, String updatedAt, String deletedAt) {
         this.id = id;
         this.name = name;
@@ -21,6 +24,7 @@ public class BudgetModel {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+        this.remainingMoney = money; // Mac dinh bang voi tong tien
     }
 
     public int getId() {
@@ -93,5 +97,12 @@ public class BudgetModel {
 
     public void setDeletedAt(String deletedAt) {
         this.deletedAt = deletedAt;
+    }
+    public int getRemainingMoney() {
+        return remainingMoney;
+    }
+
+    public void setRemainingMoney(int remainingMoney) {
+        this.remainingMoney = remainingMoney;
     }
 }

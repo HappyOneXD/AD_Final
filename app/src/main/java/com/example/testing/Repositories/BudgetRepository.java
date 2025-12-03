@@ -172,4 +172,35 @@ public class BudgetRepository extends SqliteDbHelper {
         db.close();
         return total;
     }
+
+    // Tinh so tien con lai cua budget sau khi tru di cac expense
+    @SuppressLint("Range")
+    public int getRemainingBudget(int budgetId){
+        int budgetAmount = 0;
+        int totalExpenses = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Lay so tien ban dau cua budget
+        String budgetQuery = "SELECT " + MONEY_BUDGET + " FROM " + TABLE_BUDGET + " WHERE " + ID_BUDGET + " = ?";
+        Cursor budgetCursor = db.rawQuery(budgetQuery, new String[]{String.valueOf(budgetId)});
+        if (budgetCursor.getCount() > 0){
+            budgetCursor.moveToFirst();
+            budgetAmount = budgetCursor.getInt(budgetCursor.getColumnIndex(MONEY_BUDGET));
+        }
+        budgetCursor.close();
+
+        // Tinh tong cac expense thuoc budget nay
+        String expenseQuery = "SELECT SUM(amount) as total FROM expenses WHERE budget_id = ?";
+        Cursor expenseCursor = db.rawQuery(expenseQuery, new String[]{String.valueOf(budgetId)});
+        if (expenseCursor.getCount() > 0){
+            expenseCursor.moveToFirst();
+            totalExpenses = expenseCursor.getInt(expenseCursor.getColumnIndex("total"));
+        }
+        expenseCursor.close();
+        db.close();
+
+        // Tra ve so tien con lai (budget - expenses)
+        return budgetAmount - totalExpenses;
+    }
 }
