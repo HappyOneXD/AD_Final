@@ -25,6 +25,75 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp"/>
 
+        <!-- Date Picker Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:id="@+id/cardDatePicker">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical">
+
+                <!-- Previous Month Button -->
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btnPreviousMonth"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_media_previous"
+                    android:contentDescription="Previous Month"
+                    android:tint="#03A9F4"/>
+
+                <!-- Date Display -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:id="@+id/layoutDatePicker">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvSelectedMonth"
+                        android:text="December"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#333333"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvSelectedYear"
+                        android:text="2024"
+                        android:textSize="14sp"
+                        android:textColor="#666666"/>
+                </LinearLayout>
+
+                <!-- Next Month Button -->
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/btnNextMonth"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_media_next"
+                    android:contentDescription="Next Month"
+                    android:tint="#03A9F4"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <!-- Card hien thi tong budget -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -183,7 +252,5 @@
             android:layout_marginBottom="60dp"
             android:nestedScrollingEnabled="false"
             android:id="@+id/rvRecentExpenses"/>
-
-
     </LinearLayout>
 </ScrollView>

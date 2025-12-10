@@ -1,5 +1,6 @@
 package com.example.testing.Fragments;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.testing.Adapters.ExpenseAdapter;
-import com.example.testing.Models.BudgetModel;
 import com.example.testing.Models.ExpenseModel;
 import com.example.testing.R;
 import com.example.testing.Repositories.BudgetRepository;
@@ -24,10 +26,12 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -42,12 +46,18 @@ public class HomeFragment extends Fragment {
 
     // Cac bien de hien thi thong tin tong quan
     private TextView tvTotalBudgets, tvTotalExpenses, tvRecentTitle, tvMonthYear;
+    private TextView tvSelectedMonth, tvSelectedYear;
+    private ImageButton btnPreviousMonth, btnNextMonth;
+    private LinearLayout layoutDatePicker;
     private PieChart pieChartExpenses;
     private RecyclerView rvRecentExpenses;
     private BudgetRepository budgetRepository;
     private ExpenseRepository expenseRepository;
     private ExpenseAdapter expenseAdapter;
     private int userId = 0;
+
+    // Calendar for date filtering
+    private Calendar selectedCalendar;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -69,6 +79,8 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        // Initialize calendar to current month
+        selectedCalendar = Calendar.getInstance();
     }
 
     @Override
@@ -77,13 +89,20 @@ public class HomeFragment extends Fragment {
         // Inflate layout cho fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // hien cac view
+        // Anh xa cac view
         tvTotalBudgets = view.findViewById(R.id.tvTotalBudgets);
         tvTotalExpenses = view.findViewById(R.id.tvTotalExpenses);
         tvMonthYear = view.findViewById(R.id.tvMonthYear);
         pieChartExpenses = view.findViewById(R.id.pieChartExpenses);
         tvRecentTitle = view.findViewById(R.id.tvRecentTitle);
         rvRecentExpenses = view.findViewById(R.id.rvRecentExpenses);
+
+        // Date picker views
+        tvSelectedMonth = view.findViewById(R.id.tvSelectedMonth);
+        tvSelectedYear = view.findViewById(R.id.tvSelectedYear);
+        btnPreviousMonth = view.findViewById(R.id.btnPreviousMonth);
+        btnNextMonth = view.findViewById(R.id.btnNextMonth);
+        layoutDatePicker = view.findViewById(R.id.layoutDatePicker);
 
         // Khoi tao repository
         budgetRepository = new BudgetRepository(getActivity());
@@ -93,50 +112,122 @@ public class HomeFragment extends Fragment {
         SharedPreferences spf = getActivity().getSharedPreferences("USER_INFO", MODE_PRIVATE);
         userId = spf.getInt("USER_ID", 0);
 
-        // Hien thi thong tin tong quan
-        loadDashboardData();
+        // Setup date picker controls
+        setupDatePicker();
 
-        // Hien thi pie chart expense distribution
-        loadExpenseDistributionChart();
-
-        // Hien thi danh sach expense gan day
-        loadRecentExpenses();
+        // Load initial data for current month
+        updateDateDisplay();
+        loadDataForSelectedMonth();
 
         return view;
     }
 
-    // Load thong tin tong quan ve budget va expense
-    private void loadDashboardData(){
-        // Tinh tong so tien cua tat ca budget
+    private void setupDatePicker() {
+        // Previous month button
+        btnPreviousMonth.setOnClickListener(v -> {
+            selectedCalendar.add(Calendar.MONTH, -1);
+            updateDateDisplay();
+            loadDataForSelectedMonth();
+        });
+
+        // Next month button
+        btnNextMonth.setOnClickListener(v -> {
+            selectedCalendar.add(Calendar.MONTH, 1);
+            updateDateDisplay();
+            loadDataForSelectedMonth();
+        });
+
+        // Click on date layout to open date picker dialog
+        layoutDatePicker.setOnClickListener(v -> showDatePickerDialog());
+    }
+
+    private void showDatePickerDialog() {
+        int year = selectedCalendar.get(Calendar.YEAR);
+        int month = selectedCalendar.get(Calendar.MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                (view, selectedYear, selectedMonth, dayOfMonth) -> {
+                    selectedCalendar.set(Calendar.YEAR, selectedYear);
+                    selectedCalendar.set(Calendar.MONTH, selectedMonth);
+                    updateDateDisplay();
+                    loadDataForSelectedMonth();
+                },
+                year, month, 1
+        );
+        datePickerDialog.show();
+    }
+
+    private void updateDateDisplay() {
+        // Update month name
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        tvSelectedMonth.setText(monthFormat.format(selectedCalendar.getTime()));
+
+        // Update year
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+        tvSelectedYear.setText(yearFormat.format(selectedCalendar.getTime()));
+    }
+
+    private void loadDataForSelectedMonth() {
+        // Get start and end dates for the selected month
+        Calendar startDate = (Calendar) selectedCalendar.clone();
+        startDate.set(Calendar.DAY_OF_MONTH, 1);
+        startDate.set(Calendar.HOUR_OF_DAY, 0);
+        startDate.set(Calendar.MINUTE, 0);
+        startDate.set(Calendar.SECOND, 0);
+
+        Calendar endDate = (Calendar) selectedCalendar.clone();
+        endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+        endDate.set(Calendar.HOUR_OF_DAY, 23);
+        endDate.set(Calendar.MINUTE, 59);
+        endDate.set(Calendar.SECOND, 59);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String startDateStr = sdf.format(startDate.getTime());
+        String endDateStr = sdf.format(endDate.getTime());
+
+        // Load dashboard data
+        loadDashboardData(startDateStr, endDateStr);
+
+        // Load pie chart
+        loadExpenseDistributionChart(startDateStr, endDateStr);
+
+        // Load recent expenses
+        loadRecentExpenses(startDateStr, endDateStr);
+    }
+
+    // Load thong tin tong quan ve budget va expense for selected month
+    private void loadDashboardData(String startDate, String endDate) {
+        // Tinh tong so tien cua tat ca budget (all time, not filtered by month)
         int totalBudgetMoney = budgetRepository.getTotalBudgetMoney();
         tvTotalBudgets.setText("Total Budgets: " + formatCurrency(totalBudgetMoney) + " VND");
 
-        // Lay danh sach tat ca expense de tinh tong
-        ArrayList<ExpenseModel> allExpenses = expenseRepository.getListExpenses();
+        // Get expenses for selected month only
+        ArrayList<ExpenseModel> monthExpenses = expenseRepository.getExpensesByDateRange(startDate, endDate);
         int totalExpenses = 0;
-        for (ExpenseModel expense : allExpenses){
+        for (ExpenseModel expense : monthExpenses) {
             totalExpenses += expense.getAmount();
         }
         tvTotalExpenses.setText("Total Expenses: " + formatCurrency(totalExpenses) + " VND");
     }
 
-    // Load pie chart showing expense distribution by budget/category
-    private void loadExpenseDistributionChart(){
-        // Get current month and year
-        java.text.SimpleDateFormat monthFormat = new java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault());
-        String currentMonthYear = monthFormat.format(new java.util.Date());
+    // Load pie chart showing expense distribution by budget/category for selected month
+    private void loadExpenseDistributionChart(String startDate, String endDate) {
+        // Update chart title with selected month/year
+        SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+        String currentMonthYear = monthYearFormat.format(selectedCalendar.getTime());
         tvMonthYear.setText("Expenses for " + currentMonthYear);
 
-        // Get all expenses
-        ArrayList<ExpenseModel> allExpenses = expenseRepository.getListExpenses();
+        // Get expenses for selected month
+        ArrayList<ExpenseModel> monthExpenses = expenseRepository.getExpensesByDateRange(startDate, endDate);
 
         // Group expenses by budget name and calculate totals
         HashMap<String, Integer> expensesByBudget = new HashMap<>();
         int totalAmount = 0;
 
-        for (ExpenseModel expense : allExpenses){
+        for (ExpenseModel expense : monthExpenses) {
             String budgetName = expense.getBudgetName();
-            if (budgetName == null || budgetName.isEmpty()){
+            if (budgetName == null || budgetName.isEmpty()) {
                 budgetName = "Uncategorized";
             }
 
@@ -162,7 +253,7 @@ public class HomeFragment extends Fragment {
         };
 
         int colorIndex = 0;
-        for (Map.Entry<String, Integer> entry : expensesByBudget.entrySet()){
+        for (Map.Entry<String, Integer> entry : expensesByBudget.entrySet()) {
             float percentage = (float) entry.getValue() / totalAmount * 100;
             entries.add(new PieEntry(entry.getValue(), entry.getKey()));
             colors.add(customColors[colorIndex % customColors.length]);
@@ -170,7 +261,7 @@ public class HomeFragment extends Fragment {
         }
 
         // If no expenses, show "No data"
-        if (entries.isEmpty()){
+        if (entries.isEmpty()) {
             entries.add(new PieEntry(1, "No expenses yet"));
             colors.add(Color.GRAY);
         }
@@ -215,16 +306,23 @@ public class HomeFragment extends Fragment {
     }
 
     // Dinh dang so tien theo format currency (1,000,000)
-    private String formatCurrency(int amount){
+    private String formatCurrency(int amount) {
         return String.format("%,d", amount);
     }
 
-    // Load danh sach 5 expense gan day nhat
-    private void loadRecentExpenses(){
-        ArrayList<ExpenseModel> recentExpenses = expenseRepository.getRecentExpenses(5);
+    // Load danh sach expense gan day nhat for selected month
+    private void loadRecentExpenses(String startDate, String endDate) {
+        ArrayList<ExpenseModel> recentExpenses = expenseRepository.getExpensesByDateRange(startDate, endDate);
 
-        if (recentExpenses.size() > 0){
-            tvRecentTitle.setText("Recent Expenses:");
+        // Limit to 5 most recent
+        if (recentExpenses.size() > 5) {
+            recentExpenses = new ArrayList<>(recentExpenses.subList(0, 5));
+        }
+
+        if (recentExpenses.size() > 0) {
+            SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+            String monthYear = monthYearFormat.format(selectedCalendar.getTime());
+            tvRecentTitle.setText("Recent Expenses - " + monthYear + ":");
 
             // Hien thi danh sach expense gan day trong RecyclerView
             expenseAdapter = new ExpenseAdapter(recentExpenses, getContext());
@@ -232,7 +330,15 @@ public class HomeFragment extends Fragment {
             rvRecentExpenses.setLayoutManager(linearLayoutManager);
             rvRecentExpenses.setAdapter(expenseAdapter);
         } else {
-            tvRecentTitle.setText("No recent expenses");
+            SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+            String monthYear = monthYearFormat.format(selectedCalendar.getTime());
+            tvRecentTitle.setText("No expenses for " + monthYear);
+
+            // Clear the recycler view
+            if (expenseAdapter != null) {
+                expenseAdapter = new ExpenseAdapter(new ArrayList<>(), getContext());
+                rvRecentExpenses.setAdapter(expenseAdapter);
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout cho fragment hien thi danh sach expenses -->
+<!-- Layout cho fragment hien thi danh sach expenses with date filter -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.ExpensesFragment"
@@ -17,11 +18,97 @@
         android:textStyle="bold"
         android:id="@+id/btnAddExpense"/>
 
+    <!-- Date Filter Card (Optional) -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAddExpense"
+        android:layout_marginTop="10dp"
+        android:id="@+id/cardDateFilter"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/layoutDateFilter">
+
+            <!-- Previous Month Button -->
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/btnPreviousMonth"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_media_previous"
+                android:contentDescription="Previous Month"
+                android:scaleType="fitCenter"
+                android:tint="#03A9F4"/>
+
+            <!-- Date Display -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvFilterMonth"
+                    android:text="All"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvFilterYear"
+                    android:text="Time"
+                    android:textSize="12sp"
+                    android:textColor="#666666"/>
+            </LinearLayout>
+
+            <!-- Next Month Button -->
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/btnNextMonth"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_media_next"
+                android:contentDescription="Next Month"
+                android:scaleType="fitCenter"
+                android:tint="#03A9F4"/>
+
+            <!-- Clear Filter Button -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvClearFilter"
+                android:text="✕"
+                android:textSize="20sp"
+                android:textColor="#F44336"
+                android:padding="8dp"
+                android:visibility="gone"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Clear Filter"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <!-- RecyclerView hien thi danh sach expenses -->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnAddExpense"
+        android:layout_below="@id/cardDateFilter"
         android:id="@+id/rvExpense"
         android:layout_marginBottom="?actionBarSize"
         android:layout_marginTop="10dp"/>

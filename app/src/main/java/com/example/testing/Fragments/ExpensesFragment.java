@@ -1,5 +1,6 @@
 package com.example.testing.Fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,16 +12,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.testing.Activities.Expenses.AddExpenseActivity;
+import com.example.testing.Activities.Expenses.EditExpenseActivity;
 import com.example.testing.Adapters.ExpenseAdapter;
 import com.example.testing.Models.ExpenseModel;
 import com.example.testing.R;
 import com.example.testing.Repositories.ExpenseRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
-// Fragment hien thi danh sach cac chi phi (expenses)
+// Fragment hien thi danh sach cac chi phi (expenses) with optional date filtering
 public class ExpensesFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -34,6 +42,15 @@ public class ExpensesFragment extends Fragment {
     private ExpenseAdapter expenseAdapter;
     private ExpenseRepository expenseRepository;
     private RecyclerView expenseRcv;
+
+    // Date filter views
+    private LinearLayout layoutDateFilter;
+    private TextView tvFilterMonth, tvFilterYear, tvClearFilter;
+    private ImageButton btnPreviousMonth, btnNextMonth;
+
+    // Calendar for date filtering (null = show all)
+    private Calendar selectedCalendar;
+    private boolean isFilterActive = false;
 
     public ExpensesFragment() {
         // Required empty public constructor
@@ -67,6 +84,18 @@ public class ExpensesFragment extends Fragment {
         Button btnCreateExpense = view.findViewById(R.id.btnAddExpense);
         expenseRcv = view.findViewById(R.id.rvExpense);
 
+        // Date filter views (will be added to layout)
+        layoutDateFilter = view.findViewById(R.id.layoutDateFilter);
+        if (layoutDateFilter != null) {
+            tvFilterMonth = view.findViewById(R.id.tvFilterMonth);
+            tvFilterYear = view.findViewById(R.id.tvFilterYear);
+            btnPreviousMonth = view.findViewById(R.id.btnPreviousMonth);
+            btnNextMonth = view.findViewById(R.id.btnNextMonth);
+            tvClearFilter = view.findViewById(R.id.tvClearFilter);
+
+            setupDateFilter();
+        }
+
         // Xu ly nut them expense moi
         btnCreateExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,8 +110,123 @@ public class ExpensesFragment extends Fragment {
         expenseModelArrayList = new ArrayList<>();
         expenseRepository = new ExpenseRepository(getActivity());
 
-        // Lay danh sach expense tu database
-        expenseModelArrayList = expenseRepository.getListExpenses();
+        // Load all expenses initially
+        loadExpenses();
+
+        return view;
+    }
+
+    private void setupDateFilter() {
+        // Initialize to current month
+        selectedCalendar = Calendar.getInstance();
+
+        // Previous month button
+        btnPreviousMonth.setOnClickListener(v -> {
+            if (!isFilterActive) {
+                isFilterActive = true;
+            }
+            selectedCalendar.add(Calendar.MONTH, -1);
+            updateDateFilterDisplay();
+            loadExpenses();
+        });
+
+        // Next month button
+        btnNextMonth.setOnClickListener(v -> {
+            if (!isFilterActive) {
+                isFilterActive = true;
+            }
+            selectedCalendar.add(Calendar.MONTH, 1);
+            updateDateFilterDisplay();
+            loadExpenses();
+        });
+
+        // Click on date to open picker
+        layoutDateFilter.setOnClickListener(v -> {
+            if (!isFilterActive) {
+                isFilterActive = true;
+                updateDateFilterDisplay();
+                loadExpenses();
+            } else {
+                showDatePickerDialog();
+            }
+        });
+
+        // Clear filter button
+        if (tvClearFilter != null) {
+            tvClearFilter.setOnClickListener(v -> {
+                isFilterActive = false;
+                selectedCalendar = Calendar.getInstance();
+                updateDateFilterDisplay();
+                loadExpenses();
+            });
+        }
+
+        updateDateFilterDisplay();
+    }
+
+    private void showDatePickerDialog() {
+        int year = selectedCalendar.get(Calendar.YEAR);
+        int month = selectedCalendar.get(Calendar.MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                (view, selectedYear, selectedMonth, dayOfMonth) -> {
+                    selectedCalendar.set(Calendar.YEAR, selectedYear);
+                    selectedCalendar.set(Calendar.MONTH, selectedMonth);
+                    isFilterActive = true;
+                    updateDateFilterDisplay();
+                    loadExpenses();
+                },
+                year, month, 1
+        );
+        datePickerDialog.show();
+    }
+
+    private void updateDateFilterDisplay() {
+        if (layoutDateFilter == null) return;
+
+        if (isFilterActive) {
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+            tvFilterMonth.setText(monthFormat.format(selectedCalendar.getTime()));
+            tvFilterYear.setText(yearFormat.format(selectedCalendar.getTime()));
+
+            if (tvClearFilter != null) {
+                tvClearFilter.setVisibility(View.VISIBLE);
+            }
+        } else {
+            tvFilterMonth.setText("All");
+            tvFilterYear.setText("Time");
+            if (tvClearFilter != null) {
+                tvClearFilter.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void loadExpenses() {
+        if (isFilterActive && layoutDateFilter != null) {
+            // Load expenses for selected month
+            Calendar startDate = (Calendar) selectedCalendar.clone();
+            startDate.set(Calendar.DAY_OF_MONTH, 1);
+            startDate.set(Calendar.HOUR_OF_DAY, 0);
+            startDate.set(Calendar.MINUTE, 0);
+            startDate.set(Calendar.SECOND, 0);
+
+            Calendar endDate = (Calendar) selectedCalendar.clone();
+            endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+            endDate.set(Calendar.HOUR_OF_DAY, 23);
+            endDate.set(Calendar.MINUTE, 59);
+            endDate.set(Calendar.SECOND, 59);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            String startDateStr = sdf.format(startDate.getTime());
+            String endDateStr = sdf.format(endDate.getTime());
+
+            expenseModelArrayList = expenseRepository.getExpensesByDateRange(startDateStr, endDateStr);
+        } else {
+            // Load all expenses
+            expenseModelArrayList = expenseRepository.getListExpenses();
+        }
 
         // Tao adapter va gan vao RecyclerView
         expenseAdapter = new ExpenseAdapter(expenseModelArrayList, getContext());
@@ -97,13 +241,18 @@ public class ExpensesFragment extends Fragment {
                 // Lay expense duoc click
                 ExpenseModel selectedExpense = expenseModelArrayList.get(position);
                 // Chuyen sang man hinh chinh sua expense
-                Intent intent = new Intent(getActivity(), com.example.testing.Activities.Expenses.EditExpenseActivity.class);
+                Intent intent = new Intent(getActivity(), EditExpenseActivity.class);
                 // Gui expense ID sang EditExpenseActivity
                 intent.putExtra("EXPENSE_ID", selectedExpense.getId());
                 startActivity(intent);
             }
         });
+    }
 
-        return view;
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload data when returning to fragment
+        loadExpenses();
     }
 }
