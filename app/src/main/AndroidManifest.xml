@@ -16,6 +16,7 @@
         <activity android:name=".Activities.Expenses.AddExpenseActivity"/>
         <activity android:name=".Activities.Expenses.EditExpenseActivity"/>
         <activity android:name=".Activities.Budgets.EditBudgetActivity"/>
+        <activity android:name=".Activities.ForgetPasswordActivity"/>
         <activity
             android:name=".Activities.LoginActivity"
             android:exported="true">
