@@ -159,7 +159,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             Log.d(TAG, "showPasswordResetDialog() called for user: " + username);
 
             // Create temporary password
-            String tempPassword = "123";
+            String tempPassword = "Temp@123";
             Log.d(TAG, "Temporary password: " + tempPassword);
 
             // Update temporary password in database

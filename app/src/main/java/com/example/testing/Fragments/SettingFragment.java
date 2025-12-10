@@ -192,6 +192,11 @@ public class SettingFragment extends Fragment {
                 return;
             }
 
+            if (newPassword.length() < 6){
+                Toast.makeText(getContext(), "New password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (TextUtils.isEmpty(confirmPassword)){
                 Toast.makeText(getContext(), "Please confirm new password", Toast.LENGTH_SHORT).show();
                 return;

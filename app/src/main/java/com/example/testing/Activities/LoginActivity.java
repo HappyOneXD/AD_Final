@@ -75,6 +75,11 @@ public class LoginActivity extends AppCompatActivity {
                     edtPassword.setError("Password can be not empty");
                     return;
                 }
+                // Add password length validation
+                if (password.length() < 6) {
+                    edtPassword.setError("Password must be at least 6 characters");
+                    return;
+                }
                 UserModel infoUser = userRepository.loginUser(username, password);
                 // FIXED: Better null check
                 if (infoUser != null && infoUser.getId() > 0 && infoUser.getUsername() != null){
