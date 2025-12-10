@@ -77,13 +77,15 @@
         android:textSize="16sp"
         android:layout_gravity="center_horizontal"
         android:textStyle="italic|bold"
-        android:id="@+id/tvSignUp" />
-
+        android:id="@+id/tvSignUp"/>
     <TextView
+        android:id="@+id/tvForgetPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Forget password"
         android:layout_marginTop="5dp"
         android:textSize="16sp"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:textColor="#F44336"
+        android:textStyle="bold"/>
 </LinearLayout>

@@ -5,33 +5,32 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.example.testing.Database.SqliteDbHelper;
 import com.example.testing.Models.UserModel;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class UserRepository extends SqliteDbHelper {
+    private static final String TAG = "UserRepository";
+
     public UserRepository(@Nullable Context context) {
         super(context);
     }
 
-    // day la noi viet thao tac truy van du lieu
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    // Get current date - works with API 24+
     private String getCurrentDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        ZonedDateTime zone = ZonedDateTime.now();
-        return dtf.format(zone);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    // Save user account
     public long saveUserAccount(String username, String password, String email, String phone) {
-        // xu ly lay ra ngay thang hien tai
         String currentDate = getCurrentDate();
         ContentValues values = new ContentValues();
         values.put(USER_USERNAME, username);
@@ -40,7 +39,7 @@ public class UserRepository extends SqliteDbHelper {
         values.put(USER_PHONE, phone);
         values.put(USER_ROLE, 1);
         values.put(CREATED_AT, currentDate);
-        // insert data to users table
+
         SQLiteDatabase db = this.getWritableDatabase();
         long insert = db.insert(TABLE_USERS, null, values);
         db.close();
@@ -48,14 +47,11 @@ public class UserRepository extends SqliteDbHelper {
     }
 
     public boolean checkExistsUsername(String username) {
-        // kiem tra xem username(account) da ton tai trong csdl chua ?
+        // Check if username exists in database
         boolean checkingExists = false;
-        // khai bao danh sach cac cot trong bang users can truy van
         String[] cols = {USER_ID, USER_USERNAME};
-        // select id, username form users;
         String condition = USER_USERNAME + " =? ";
-        // select id, username from users where username = ?
-        String[] params = {username}; // tham so truyen vao cho dieu kien WHERE
+        String[] params = {username};
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor data = db.query(TABLE_USERS, cols, condition, params, null, null, null);
         if (data.getCount() > 0) {
@@ -68,17 +64,16 @@ public class UserRepository extends SqliteDbHelper {
 
     @SuppressLint("Range")
     public UserModel loginUser(String username, String password) {
-        // kiem xem username va password cua nguoi co ton tai trong csdl hay ko?
-        UserModel infoUser = new UserModel();
+        // Check if username and password exist in database
+        UserModel infoUser = null;
         String[] cols = {USER_ID, USER_USERNAME, USER_EMAIL, USER_PHONE, USER_ROLE};
         String condition = USER_USERNAME + " =? AND " + USER_PASSWORD + " =? ";
-        // select id, username, email, phone, role from users where username = ? and password = ?
         String[] params = {username, password};
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor data = db.query(TABLE_USERS, cols, condition, params, null, null, null);
         if (data.getCount() > 0) {
             data.moveToFirst();
-            // gan du lieu vao User Model
+            infoUser = new UserModel();
             infoUser.setId(data.getInt(data.getColumnIndex(USER_ID)));
             infoUser.setUsername(data.getString(data.getColumnIndex(USER_USERNAME)));
             infoUser.setEmail(data.getString(data.getColumnIndex(USER_EMAIL)));
@@ -88,5 +83,71 @@ public class UserRepository extends SqliteDbHelper {
         data.close();
         db.close();
         return infoUser;
+    }
+
+    // FIXED: Get user by username and email (for password reset)
+    @SuppressLint("Range")
+    public UserModel getUserByUsernameAndEmail(String username, String email){
+        UserModel infoUser = null;
+        SQLiteDatabase db = null;
+        Cursor data = null;
+
+        try {
+            String[] cols = { USER_ID, USER_USERNAME, USER_EMAIL };
+            String condition = USER_USERNAME + " =? AND " + USER_EMAIL + " =? ";
+            String[] params = { username, email };
+
+            db = this.getReadableDatabase();
+            data = db.query(TABLE_USERS, cols, condition, params, null, null, null);
+
+            Log.d(TAG, "Query executed. Row count: " + data.getCount());
+
+            if (data.getCount() > 0){
+                data.moveToFirst();
+                infoUser = new UserModel();
+                infoUser.setId(data.getInt(data.getColumnIndex(USER_ID)));
+                infoUser.setUsername(data.getString(data.getColumnIndex(USER_USERNAME)));
+                infoUser.setEmail(data.getString(data.getColumnIndex(USER_EMAIL)));
+                Log.d(TAG, "User found: " + infoUser.getUsername());
+            } else {
+                Log.d(TAG, "No user found with username: " + username + " and email: " + email);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getUserByUsernameAndEmail: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (data != null) {
+                data.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+        return infoUser;
+    }
+
+    // FIXED: Update password by username
+    public int updatePasswordByUsername(String username, String newPassword){
+        SQLiteDatabase db = null;
+        int update = 0;
+
+        try {
+            String currentDate = getCurrentDate();
+            ContentValues values = new ContentValues();
+            values.put(USER_PASSWORD, newPassword);
+            values.put(UPDATED_AT, currentDate);
+
+            db = this.getWritableDatabase();
+            update = db.update(TABLE_USERS, values, USER_USERNAME + " = ?", new String[]{username});
+            Log.d(TAG, "Password updated for user: " + username + ", rows affected: " + update);
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating password: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return update;
     }
 }

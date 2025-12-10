@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.testing.MainActivity;
 import com.example.testing.Models.UserModel;
 import com.example.testing.R;
 import com.example.testing.Repositories.UserRepository;
@@ -20,7 +21,7 @@ import com.example.testing.Repositories.UserRepository;
 public class LoginActivity extends AppCompatActivity {
     EditText edtUsername, edtPassword;
     Button btnLogin, btnCancel;
-    TextView tvSignUp;
+    TextView tvSignUp, tvForgetPassword;
     UserRepository userRepository;
 
     @Override
@@ -30,10 +31,12 @@ public class LoginActivity extends AppCompatActivity {
         userRepository = new UserRepository(LoginActivity.this);
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
-        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin  = findViewById(R.id.btnLogin);
         btnCancel = findViewById(R.id.btnCancel);
-        tvSignUp = findViewById(R.id.tvSignUp);
-        // click to redirect RegisterActivity
+        tvSignUp  = findViewById(R.id.tvSignUp);
+        tvForgetPassword = findViewById(R.id.tvForgetPassword);
+
+        // Click to redirect RegisterActivity
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,24 +44,42 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intentSignUp);
             }
         });
+
+        // Click to redirect ForgetPasswordActivity
+        tvForgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentForget = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+                startActivity(intentForget);
+            }
+        });
+
+        // FIXED: Added Cancel button click listener
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String username = edtUsername.getText().toString().trim();
                 String password = edtPassword.getText().toString().trim();
-                if (TextUtils.isEmpty(username)) {
+                if (TextUtils.isEmpty(username)){
                     edtUsername.setError("Username can be not empty");
                     return;
                 }
-                if (TextUtils.isEmpty(password)) {
+                if (TextUtils.isEmpty(password)){
                     edtPassword.setError("Password can be not empty");
                     return;
                 }
                 UserModel infoUser = userRepository.loginUser(username, password);
-                assert infoUser != null;
-                if (infoUser.getId() > 0 && infoUser.getUsername() != null) {
-                    // login successful
-                    // luu thong tin nguoi dung Share preferences
+                // FIXED: Better null check
+                if (infoUser != null && infoUser.getId() > 0 && infoUser.getUsername() != null){
+                    // Login successful
+                    // Luu thong tin nguoi dung Share preferences
                     SharedPreferences sharePf = getSharedPreferences("USER_INFO", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharePf.edit();
                     editor.putInt("USER_ID", infoUser.getId());
@@ -68,20 +89,19 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply();
 
                     Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                    // send data to Main Activity
+                    // Send data to Main Activity
                     Bundle bundle = new Bundle();
                     bundle.putInt("ID_ACCOUNT", infoUser.getId());
                     bundle.putString("ACCOUNT_USER", infoUser.getUsername());
                     bundle.putString("EMAIL_USER", infoUser.getEmail());
-                    intent.putExtras(bundle); // nen cac du lieu lai thanh 1 tep du lieu de gui cung mot luc
-                    startActivity(intent); // gui du lieu sang man hinh khac
-                    finish();// khong cho phep quay lai
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
                 } else {
-                    // account invalid
+                    // Account invalid
                     Toast.makeText(LoginActivity.this, "Account invalid", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 }
-
