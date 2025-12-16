@@ -262,4 +262,57 @@ public class ExpenseRepository extends SqliteDbHelper {
         db.close();
         return expenses;
     }
+    // Get expenses by date range for a specific user
+    @SuppressLint("Range")
+    public ArrayList<ExpenseModel> getExpensesByDateRangeAndUser(String startDate, String endDate, int userId) {
+        ArrayList<ExpenseModel> expenses = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT e.*, b." + NAME_BUDGET + " as budget_name FROM " + TABLE_EXPENSES + " e " +
+                "LEFT JOIN " + TABLE_BUDGET + " b ON e." + BUDGET_ID_EXPENSE + " = b." + ID_BUDGET +
+                " WHERE e." + CREATED_AT + " >= ? AND e." + CREATED_AT + " <= ? AND e." + USER_ID_EXPENSE + " = ?" +
+                " ORDER BY e." + CREATED_AT + " DESC";
+        Cursor cursor = db.rawQuery(query, new String[]{startDate, endDate, String.valueOf(userId)});
+
+        if (cursor.getCount() > 0) {
+            if (cursor.moveToFirst()) {
+                do {
+                    ExpenseModel expense = new ExpenseModel(
+                            cursor.getInt(cursor.getColumnIndex(ID_EXPENSE)),
+                            cursor.getString(cursor.getColumnIndex(NAME_EXPENSE)),
+                            cursor.getInt(cursor.getColumnIndex(AMOUNT_EXPENSE)),
+                            cursor.getString(cursor.getColumnIndex(DESC_EXPENSE)),
+                            cursor.getInt(cursor.getColumnIndex(BUDGET_ID_EXPENSE)),
+                            cursor.getInt(cursor.getColumnIndex(USER_ID_EXPENSE)),
+                            cursor.getInt(cursor.getColumnIndex(STATUS_EXPENSE)),
+                            cursor.getString(cursor.getColumnIndex(CREATED_AT)),
+                            cursor.getString(cursor.getColumnIndex(UPDATED_AT)),
+                            cursor.getString(cursor.getColumnIndex(DELETED_AT))
+                    );
+                    expense.setBudgetName(cursor.getString(cursor.getColumnIndex("budget_name")));
+                    expenses.add(expense);
+                } while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+        return expenses;
+    }
+
+    // Get total expenses for a specific user
+    @SuppressLint("Range")
+    public int getTotalExpensesByUser(int userId) {
+        int total = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT SUM(" + AMOUNT_EXPENSE + ") as total FROM " + TABLE_EXPENSES +
+                " WHERE " + USER_ID_EXPENSE + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            total = cursor.getInt(cursor.getColumnIndex("total"));
+        }
+        cursor.close();
+        db.close();
+        return total;
+    }
 }

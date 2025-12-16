@@ -1,6 +1,7 @@
 package com.example.testing.Fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,8 @@ import com.example.testing.Repositories.BudgetRepository;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 // Fragment hien thi danh sach cac budget
 public class BudgetFragment extends Fragment {
 
@@ -36,6 +39,7 @@ public class BudgetFragment extends Fragment {
     private BudgetModel budgetModel;
     private BudgetRepository budgetRepository;
     private RecyclerView budgetRcv;
+    private int userId = 0; // ADDED: Store current user ID
 
     public BudgetFragment() {
         // Required empty public constructor
@@ -69,6 +73,10 @@ public class BudgetFragment extends Fragment {
         Button btnCreateBudget = view.findViewById(R.id.btnAddBudget);
         budgetRcv = view.findViewById(R.id.rvBudget);
 
+        // ADDED: Get current user ID from SharedPreferences
+        SharedPreferences spf = getActivity().getSharedPreferences("USER_INFO", MODE_PRIVATE);
+        userId = spf.getInt("USER_ID", 0);
+
         // Xu ly nut them budget moi
         btnCreateBudget.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +90,16 @@ public class BudgetFragment extends Fragment {
         budgetModelArrayList = new ArrayList<>();
         budgetRepository = new BudgetRepository(getActivity());
 
-        // Lay danh sach budget tu database
-        budgetModelArrayList = budgetRepository.getListBudgets();
+        // Load budgets for current user
+        loadBudgets();
+
+        return view;
+    }
+
+    // ADDED: Load budgets method to refresh data
+    private void loadBudgets() {
+        // FIXED: Get budgets by user ID instead of all budgets
+        budgetModelArrayList = budgetRepository.getBudgetsByUserId(userId);
 
         // Tinh so tien con lai cho moi budget
         for (BudgetModel budget : budgetModelArrayList){
@@ -110,7 +126,12 @@ public class BudgetFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
 
-        return view;
+    // ADDED: Reload data when returning to fragment
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadBudgets();
     }
 }

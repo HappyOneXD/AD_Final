@@ -2,6 +2,7 @@ package com.example.testing.Fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
+
 // Fragment hien thi danh sach cac chi phi (expenses) with optional date filtering
 public class ExpensesFragment extends Fragment {
 
@@ -42,6 +45,7 @@ public class ExpensesFragment extends Fragment {
     private ExpenseAdapter expenseAdapter;
     private ExpenseRepository expenseRepository;
     private RecyclerView expenseRcv;
+    private int userId = 0; // ADDED: Store current user ID
 
     // Date filter views
     private LinearLayout layoutDateFilter;
@@ -83,6 +87,10 @@ public class ExpensesFragment extends Fragment {
         // Anh xa cac view
         Button btnCreateExpense = view.findViewById(R.id.btnAddExpense);
         expenseRcv = view.findViewById(R.id.rvExpense);
+
+        // ADDED: Get current user ID from SharedPreferences
+        SharedPreferences spf = getActivity().getSharedPreferences("USER_INFO", MODE_PRIVATE);
+        userId = spf.getInt("USER_ID", 0);
 
         // Date filter views (will be added to layout)
         layoutDateFilter = view.findViewById(R.id.layoutDateFilter);
@@ -205,7 +213,7 @@ public class ExpensesFragment extends Fragment {
 
     private void loadExpenses() {
         if (isFilterActive && layoutDateFilter != null) {
-            // Load expenses for selected month
+            // Load expenses for selected month AND current user
             Calendar startDate = (Calendar) selectedCalendar.clone();
             startDate.set(Calendar.DAY_OF_MONTH, 1);
             startDate.set(Calendar.HOUR_OF_DAY, 0);
@@ -222,10 +230,19 @@ public class ExpensesFragment extends Fragment {
             String startDateStr = sdf.format(startDate.getTime());
             String endDateStr = sdf.format(endDate.getTime());
 
-            expenseModelArrayList = expenseRepository.getExpensesByDateRange(startDateStr, endDateStr);
+            // Get expenses by date range
+            ArrayList<ExpenseModel> allExpenses = expenseRepository.getExpensesByDateRange(startDateStr, endDateStr);
+
+            // ADDED: Filter by current user
+            expenseModelArrayList = new ArrayList<>();
+            for (ExpenseModel expense : allExpenses) {
+                if (expense.getUserId() == userId) {
+                    expenseModelArrayList.add(expense);
+                }
+            }
         } else {
-            // Load all expenses
-            expenseModelArrayList = expenseRepository.getListExpenses();
+            // FIXED: Load expenses by user ID instead of all expenses
+            expenseModelArrayList = expenseRepository.getExpensesByUserId(userId);
         }
 
         // Tao adapter va gan vao RecyclerView

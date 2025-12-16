@@ -202,5 +202,23 @@ public class BudgetRepository extends SqliteDbHelper {
 
         // Tra ve so tien con lai (budget - expenses)
         return budgetAmount - totalExpenses;
+
+
+    }
+    // Get total budget amount for a specific user
+    @SuppressLint("Range")
+    public int getTotalBudgetMoneyByUser(int userId){
+        int total = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT SUM(" + MONEY_BUDGET + ") as total FROM " + TABLE_BUDGET +
+                " WHERE " + CREATOR_BUDGET + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            total = cursor.getInt(cursor.getColumnIndex("total"));
+        }
+        cursor.close();
+        db.close();
+        return total;
     }
 }

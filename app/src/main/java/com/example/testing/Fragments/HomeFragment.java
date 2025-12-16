@@ -198,12 +198,12 @@ public class HomeFragment extends Fragment {
 
     // Load thong tin tong quan ve budget va expense for selected month
     private void loadDashboardData(String startDate, String endDate) {
-        // Tinh tong so tien cua tat ca budget (all time, not filtered by month)
-        int totalBudgetMoney = budgetRepository.getTotalBudgetMoney();
+        // FIXED: Get total budget money for current user only (all time)
+        int totalBudgetMoney = budgetRepository.getTotalBudgetMoneyByUser(userId);
         tvTotalBudgets.setText("Total Budgets: " + formatCurrency(totalBudgetMoney) + " VND");
 
-        // Get expenses for selected month only
-        ArrayList<ExpenseModel> monthExpenses = expenseRepository.getExpensesByDateRange(startDate, endDate);
+        // FIXED: Get expenses for selected month AND current user only
+        ArrayList<ExpenseModel> monthExpenses = expenseRepository.getExpensesByDateRangeAndUser(startDate, endDate, userId);
         int totalExpenses = 0;
         for (ExpenseModel expense : monthExpenses) {
             totalExpenses += expense.getAmount();
@@ -218,8 +218,8 @@ public class HomeFragment extends Fragment {
         String currentMonthYear = monthYearFormat.format(selectedCalendar.getTime());
         tvMonthYear.setText("Expenses for " + currentMonthYear);
 
-        // Get expenses for selected month
-        ArrayList<ExpenseModel> monthExpenses = expenseRepository.getExpensesByDateRange(startDate, endDate);
+        // FIXED: Get expenses for selected month AND current user
+        ArrayList<ExpenseModel> monthExpenses = expenseRepository.getExpensesByDateRangeAndUser(startDate, endDate, userId);
 
         // Group expenses by budget name and calculate totals
         HashMap<String, Integer> expensesByBudget = new HashMap<>();
@@ -312,7 +312,8 @@ public class HomeFragment extends Fragment {
 
     // Load danh sach expense gan day nhat for selected month
     private void loadRecentExpenses(String startDate, String endDate) {
-        ArrayList<ExpenseModel> recentExpenses = expenseRepository.getExpensesByDateRange(startDate, endDate);
+        // FIXED: Get recent expenses for current user only
+        ArrayList<ExpenseModel> recentExpenses = expenseRepository.getExpensesByDateRangeAndUser(startDate, endDate, userId);
 
         // Limit to 5 most recent
         if (recentExpenses.size() > 5) {
@@ -340,5 +341,12 @@ public class HomeFragment extends Fragment {
                 rvRecentExpenses.setAdapter(expenseAdapter);
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload data when returning to fragment
+        loadDataForSelectedMonth();
     }
 }
